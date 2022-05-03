@@ -4,6 +4,16 @@ const quoteContainer = document.querySelector('#quote-text-inner')
 const authorContainer = document.querySelector('.quote-author-inner')
 const loader = document.querySelector('.lds-spinner')
 
+function showLoading() {
+  loader.classList.remove('hidden')
+  quotesContainer.classList.add('hidden')
+}
+
+function removeLoading() {
+  loader.classList.add('hidden')
+  quotesContainer.classList.remove('hidden')
+}
+
 function writeQuote(quote, author) {
   quoteContainer.innerHTML = quote
   authorContainer.innerHTML = author || 'Unknown'
@@ -28,14 +38,14 @@ function newQuote() {
 async function getQuotes() {
   const apiUrl = 'https://type.fit/api/quotes'
   try {
-    loading()
+    showLoading()
     const response = await fetch(apiUrl)
     apiQuotes = await response.json()
   } catch (error) {
     console.error(error)
   } finally {
     newQuote()
-    complete()
+    removeLoading()
   }
 }
 
@@ -59,21 +69,10 @@ function tweetButton() {
   button.addEventListener('click', publishQuote)
 }
 
-function loading() {
-  loader.classList.remove('hidden')
-  quotesContainer.classList.add('hidden')
-}
-
-function complete() {
-  loader.classList.add('hidden')
-  quotesContainer.classList.remove('hidden')
-}
-
 function init() {
   getQuotes()
   quoteButton()
   tweetButton()
-  loading()
 }
 
 init()
